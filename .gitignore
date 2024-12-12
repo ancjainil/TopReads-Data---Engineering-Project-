@@ -1,0 +1,10 @@
+#Ignore Config Files
+src/config.cfg
+src/warehouse/warehouse_config.cfg
+src/topreads.log
+
+#Ignore Idea Files
+.idea/
+
+#Ignore Cache Files
+src/warehouse/__pycache__/
