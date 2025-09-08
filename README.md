@@ -77,6 +77,13 @@ Copy the ETL scripts to EMR and we have our EMR ready to run jobs.
 You can follow the AWS [ Guide](https://docs.aws.amazon.com/redshift/latest/gsg/rs-gsg-launch-sample-cluster.html) to run a Redshift cluster or alternatively you can use [Redshift_Cluster_IaC.py](https://github.com/san089/Data_Engineering_Projects/blob/master/Redshift_Cluster_IaC.py) Script to create cluster automatically. 
 
 
+## Local quickstart checklist
+- Install Python 3.8+, Java, and a Spark-compatible Hadoop AWS jar on your PATH.
+- Copy `src/config.cfg.example` to `src/config.cfg` (or update your secrets manager) and set AWS keys plus bucket names for landing/working/processed zones.
+- Create the S3 buckets referenced in the config and upload a small sample of the CSVs from `SampleData/` into the landing bucket.
+- Run `python src/topreads_driver.py` from an environment that can reach Spark/YARN to move files, run transforms, and load warehouse tables.
+- Point Airflow at the same config to orchestrate the DAG once the one-off test run succeeds.
+
 ## How to run 
 Make sure Airflow webserver and scheduler is running. 
 Open the Airflow UI `http://< ec2-instance-ip >:< configured-port >` 
@@ -126,7 +133,6 @@ Data Loaded to Warehouse:
 -   Make it available to 100+ people
     -   We can set the concurrency limit for your Amazon Redshift cluster. While the concurrency limit is 50 parallel queries for a single period of time, this is on a per cluster basis, meaning you can launch as many clusters as fit for you business.
  
-
 
 
 
