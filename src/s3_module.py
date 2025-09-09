@@ -9,6 +9,7 @@ config = configparser.ConfigParser()
 config.read_file(open(f"{Path(__file__).parents[0]}/config.cfg"))
 
 class TopReadsS3Module:
+    """Lightweight helper around boto3 for the TopReads buckets."""
 
     def __init__(self):
         self._s3 = boto3\
@@ -17,6 +18,7 @@ class TopReadsS3Module:
         self._landing_zone = config.get('BUCKET','LANDING_ZONE')
         self._working_zone = config.get('BUCKET','WORKING_ZONE')
         self._processed_zone = config.get('BUCKET','PROCESSED_ZONE')
+        self._allowed_files = [name.strip() for name in config.get('FILES', 'NAME').split(",") if name.strip()]
 
     def s3_move_data(self, source_bucket = None, target_bucket= None):
         """
@@ -38,9 +40,11 @@ class TopReadsS3Module:
 
         # Move files to working zone
         for key in self.get_files(source_bucket):
-            if key in config.get('FILES','NAME').split(","):
+            if key in self._allowed_files:
                 logging.debug(f"Copying file {key} from {source_bucket} to {target_bucket}")
                 self._s3.meta.client.copy({'Bucket': source_bucket, 'Key': key}, target_bucket, key)
+            else:
+                logging.debug(f"Skipping unexpected key {key} in {source_bucket}")
 
         # cleanup source bucket,
         # Cleaning bucket part is commented to avoid uploading files to s3 again and again when testing heavy loads on ETL.
