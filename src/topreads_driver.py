@@ -54,9 +54,13 @@ def main():
     files_in_working_zone = gds3.get_files(config.get('BUCKET', 'WORKING_ZONE'))
 
     # Cleanup processed zone if files available in working zone
-    if len([set(modules.keys()) & set(files_in_working_zone)]) > 0:
+    recognized_files = set(modules.keys()) & set(files_in_working_zone)
+    if recognized_files:
         logging.info("Cleaning up processed zone.")
         gds3.clean_bucket(config.get('BUCKET', 'PROCESSED_ZONE'))
+    else:
+        logging.info("No recognized datasets found in working zone; skipping transformations.")
+        return
 
     for file in files_in_working_zone:
         if file in modules.keys():
