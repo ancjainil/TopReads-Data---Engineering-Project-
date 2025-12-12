@@ -1,6 +1,6 @@
 # TopReads Data Pipeline
 
-<img src="docs/images/goodreads.png" align="centre">
+
 
 ## Architecture 
 ![Pipeline Architecture](docs/images/architecture.png)
